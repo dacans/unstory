@@ -5,7 +5,7 @@ export const translations = {
     // ── Disclaimer ────────────────────────────────────────────────
     disclaimer: {
       heading: 'Before you begin',
-      body: 'Unwind is a self-reflection tool designed to help you organize your thoughts during difficult moments. It is not a substitute for professional therapy, psychological counseling, or medical advice. If you are experiencing a mental health crisis, please reach out to a qualified professional or emergency services. By continuing, you acknowledge that Unwind is a personal clarity tool, not a clinical service.',
+      body: 'Unstory is a self-reflection tool designed to help you organize your thoughts during difficult moments. It is not a substitute for professional therapy, psychological counseling, or medical advice. If you are experiencing a mental health crisis, please reach out to a qualified professional or emergency services. By continuing, you acknowledge that Unstory is a personal clarity tool, not a clinical service.',
       button: "I understand, let's go",
     },
 
@@ -15,9 +15,10 @@ export const translations = {
       subtext: 'This is your space. No judgment.',
       tooltip: 'Tap when you need it.',
       cta: 'I need clarity',
+      momentsButton: 'Open a Moment',
       proText: '5 free sessions · Lifetime unlock $7.99',
       disclaimerLine:
-        'Unwind is not a substitute for professional therapy or medical advice.',
+        'Unstory is not a substitute for professional therapy or medical advice.',
     },
 
     // ── Language selector ─────────────────────────────────────────
@@ -154,17 +155,34 @@ export const translations = {
           author: 'Seneca',
         },
       },
+      quoteGroups: {
+        restSimplicity: [
+          { text: 'Make the best use of what is in your power, and take the rest as it happens.', author: 'Epictetus' },
+          { text: "It is not that I'm so smart. It's that I stay with problems longer.", author: 'Seneca' },
+        ],
+        actionCourage: [
+          { text: 'You have power over your mind, not outside events.', author: 'Marcus Aurelius' },
+          { text: 'He who fears death will never do anything worthy of a living man.', author: 'Seneca' },
+        ],
+        acceptanceControl: [
+          { text: 'How long are you going to wait before you demand the best for yourself?', author: 'Epictetus' },
+        ],
+      },
     },
 
     // ── History ───────────────────────────────────────────────────
     history: {
       title: 'Your history',
+      tabSessions: 'Sessions',
+      tabMoments: 'Moments',
       statsReleased: "You've released",
       statsActed: "You've acted on",
       statsThings: 'things.',
       statsOn: '',
       emptyTitle: 'No sessions saved yet.',
       emptySubtext: 'After a session, tap "Save this" to keep it here.',
+      momentsEmpty: 'No moments saved yet.',
+      momentsEmptySubtext: 'Saved present moments will appear here.',
       emotionLabel: 'Emotion',
       sectionWrote: 'What you wrote',
       sectionResult: 'Your result',
@@ -178,9 +196,9 @@ export const translations = {
 
     // ── Paywall ───────────────────────────────────────────────────
     paywall: {
-      eyebrow: 'Unwind',
+      eyebrow: 'Unstory',
       heading: "You've used your\n5 free sessions",
-      subtext: 'Unlock Unwind forever — one time, no subscription.',
+      subtext: 'Unlock Unstory forever — one time, no subscription.',
       features: [
         'Unlimited sessions',
         'Full history saved locally',
@@ -191,6 +209,44 @@ export const translations = {
       purchaseBtn: 'Unlock for $7.99',
       oneTimeNote: 'One-time payment. Yours forever.',
       restore: 'Restore purchase',
+      label: 'UNSTORY PREMIUM',
+      title: 'See your patterns.\nBreak them.',
+      subtitle: 'Unlock unlimited sessions and start understanding yourself.',
+      feature1: 'Unlimited clarity sessions',
+      feature2: 'Full session history & search',
+      feature3: 'Present Moment grounding exercise',
+      feature4: 'All future features included',
+      monthly: 'Monthly',
+      annual: 'Annual',
+      lifetime: 'Lifetime',
+      bestValue: 'BEST VALUE',
+      mostPopular: 'MOST POPULAR',
+      monthlyPrice: '$4.99/mo',
+      annualPrice: '$14.99/yr',
+      lifetimePrice: '$24.99',
+      lifetimeNote: 'one-time',
+      cta: 'Start Premium',
+      restoreLabel: 'Restore Purchases',
+      terms: 'Terms of Use',
+      privacy: 'Privacy Policy',
+      disclaimer: 'Subscriptions auto-renew unless cancelled 24h before renewal. Managed in App Store settings.',
+    },
+
+    // ── Present Moment ────────────────────────────────────────────
+    presentMoment: {
+      oneThing: 'One more thing.',
+      takeSeconds: 'Take 60 seconds. Just look around you.',
+      imReady: "I'm ready",
+      resultTeaser: 'One more thing.',
+      resultTeaserSub: 'Take 60 seconds. Just look around you.',
+      readyBtn: "I'm ready",
+      teaserHint: '60 seconds. Just look.',
+      timerLabel: 'Take 60 seconds.\nJust look around you.',
+      noticePrompt: 'What did you notice?',
+      noticePlaceholder: 'Describe what you saw, heard, or felt...',
+      saveBtn: 'Save this moment',
+      skipBtn: 'Skip',
+      paywallHeading: 'Present Moment',
     },
   },
 
@@ -200,7 +256,7 @@ export const translations = {
   es: {
     disclaimer: {
       heading: 'Antes de comenzar',
-      body: 'Unwind es una herramienta de autorreflexión diseñada para ayudarte a ordenar tus pensamientos en momentos difíciles. No sustituye a la terapia profesional, el asesoramiento psicológico ni el consejo médico. Si estás atravesando una crisis de salud mental, por favor contacta a un profesional cualificado o a los servicios de emergencia. Al continuar, reconoces que Unwind es una herramienta de claridad personal, no un servicio clínico.',
+      body: 'Unstory es una herramienta de autorreflexión diseñada para ayudarte a ordenar tus pensamientos en momentos difíciles. No sustituye a la terapia profesional, el asesoramiento psicológico ni el consejo médico. Si estás atravesando una crisis de salud mental, por favor contacta a un profesional cualificado o a los servicios de emergencia. Al continuar, reconoces que Unstory es una herramienta de claridad personal, no un servicio clínico.',
       button: 'Entendido, vamos',
     },
 
@@ -209,9 +265,10 @@ export const translations = {
       subtext: 'Este es tu espacio. Sin juicios.',
       tooltip: 'Úsalo cuando lo necesites.',
       cta: 'Necesito claridad',
+      momentsButton: 'Abrir un momento',
       proText: '5 sesiones gratis · Acceso de por vida $7.99',
       disclaimerLine:
-        'Unwind no sustituye a la terapia profesional ni al consejo médico.',
+        'Unstory no sustituye a la terapia profesional ni al consejo médico.',
     },
 
     language: {
@@ -343,16 +400,33 @@ export const translations = {
           author: 'Séneca',
         },
       },
+      quoteGroups: {
+        restSimplicity: [
+          { text: 'Haz el mejor uso de lo que está en tu poder, y toma el resto como viene.', author: 'Epicteto' },
+          { text: 'No es que sea tan inteligente. Es que me quedo con los problemas más tiempo.', author: 'Séneca' },
+        ],
+        actionCourage: [
+          { text: 'Tienes poder sobre tu mente, no sobre los eventos externos.', author: 'Marco Aurelio' },
+          { text: 'Quien teme a la muerte nunca hará nada digno de un hombre vivo.', author: 'Séneca' },
+        ],
+        acceptanceControl: [
+          { text: '¿Cuánto tiempo más vas a esperar antes de exigirte lo mejor?', author: 'Epicteto' },
+        ],
+      },
     },
 
     history: {
       title: 'Tu historial',
+      tabSessions: 'Sesiones',
+      tabMoments: 'Momentos',
       statsReleased: 'Soltaste',
       statsActed: 'Actuaste sobre',
       statsThings: 'cosas.',
       statsOn: '',
       emptyTitle: 'Todavía no hay sesiones guardadas.',
       emptySubtext: 'Al terminar una sesión, toca "Guardar esto" para conservarla aquí.',
+      momentsEmpty: 'Todavía no hay momentos guardados.',
+      momentsEmptySubtext: 'Los momentos del presente guardados aparecerán aquí.',
       emotionLabel: 'Emoción',
       sectionWrote: 'Lo que escribiste',
       sectionResult: 'Tu resultado',
@@ -365,9 +439,9 @@ export const translations = {
     },
 
     paywall: {
-      eyebrow: 'Unwind',
+      eyebrow: 'Unstory',
       heading: 'Ya usaste tus\n5 sesiones gratis',
-      subtext: 'Desbloquea Unwind para siempre — una sola vez, sin suscripción.',
+      subtext: 'Desbloquea Unstory para siempre — una sola vez, sin suscripción.',
       features: [
         'Sesiones ilimitadas',
         'Historial completo guardado localmente',
@@ -378,6 +452,44 @@ export const translations = {
       purchaseBtn: 'Desbloquear por $7.99',
       oneTimeNote: 'Pago único. Tuyo para siempre.',
       restore: 'Restaurar compra',
+      label: 'UNSTORY PREMIUM',
+      title: 'Entiéndete.\nCámbialo.',
+      subtitle: 'Sesiones ilimitadas para entender lo que realmente sientes.',
+      feature1: 'Sesiones de claridad ilimitadas',
+      feature2: 'Historial completo de sesiones',
+      feature3: 'Ejercicio de momento presente',
+      feature4: 'Todas las funciones futuras incluidas',
+      monthly: 'Mensual',
+      annual: 'Anual',
+      lifetime: 'De por vida',
+      bestValue: 'MEJOR VALOR',
+      mostPopular: 'MÁS POPULAR',
+      monthlyPrice: '$4.99/mes',
+      annualPrice: '$14.99/año',
+      lifetimePrice: '$24.99',
+      lifetimeNote: 'pago único',
+      cta: 'Activar Premium',
+      restoreLabel: 'Restaurar compras',
+      terms: 'Términos de uso',
+      privacy: 'Política de privacidad',
+      disclaimer: 'Las suscripciones se renuevan automáticamente salvo que se cancelen 24h antes. Gestión en Ajustes de App Store.',
+    },
+
+    // ── Present Moment ────────────────────────────────────────────
+    presentMoment: {
+      oneThing: 'Una cosa más.',
+      takeSeconds: 'Tómate 60 segundos. Solo mira a tu alrededor.',
+      imReady: 'Estoy listo/a',
+      resultTeaser: 'Una cosa más.',
+      resultTeaserSub: 'Tómate 60 segundos. Solo mira a tu alrededor.',
+      readyBtn: 'Estoy listo/a',
+      teaserHint: '60 segundos. Solo mira.',
+      timerLabel: 'Tómate 60 segundos.\nSolo mira a tu alrededor.',
+      noticePrompt: '¿Qué notaste?',
+      noticePlaceholder: 'Describe lo que viste, escuchaste o sentiste...',
+      saveBtn: 'Guardar este momento',
+      skipBtn: 'Omitir',
+      paywallHeading: 'Momento Presente',
     },
   },
 
@@ -387,7 +499,7 @@ export const translations = {
   de: {
     disclaimer: {
       heading: 'Bevor du beginnst',
-      body: 'Unwind ist ein Werkzeug zur Selbstreflexion, das dir helfen soll, deine Gedanken in schwierigen Momenten zu ordnen. Es ersetzt keine professionelle Therapie, psychologische Beratung oder medizinischen Rat. Wenn du dich in einer psychischen Krise befindest, wende dich bitte an einen qualifizierten Fachmann oder den Notfalldienst. Indem du fortfährst, bestätigst du, dass Unwind ein persönliches Hilfsmittel zur Klarheit ist und kein klinischer Dienst.',
+      body: 'Unstory ist ein Werkzeug zur Selbstreflexion, das dir helfen soll, deine Gedanken in schwierigen Momenten zu ordnen. Es ersetzt keine professionelle Therapie, psychologische Beratung oder medizinischen Rat. Wenn du dich in einer psychischen Krise befindest, wende dich bitte an einen qualifizierten Fachmann oder den Notfalldienst. Indem du fortfährst, bestätigst du, dass Unstory ein persönliches Hilfsmittel zur Klarheit ist und kein klinischer Dienst.',
       button: "Verstanden, los geht's",
     },
 
@@ -396,9 +508,10 @@ export const translations = {
       subtext: 'Das hier ist dein Raum. Kein Urteil.',
       tooltip: 'Nutze es, wenn du es brauchst.',
       cta: 'Ich brauche Klarheit',
+      momentsButton: 'Moment öffnen',
       proText: '5 kostenlose Sitzungen · Lifetime-Zugang $7.99',
       disclaimerLine:
-        'Unwind ersetzt keine professionelle Therapie oder medizinischen Rat.',
+        'Unstory ersetzt keine professionelle Therapie oder medizinischen Rat.',
     },
 
     language: {
@@ -530,16 +643,33 @@ export const translations = {
           author: 'Seneca',
         },
       },
+      quoteGroups: {
+        restSimplicity: [
+          { text: 'Nutze das Beste aus dem, was in deiner Macht steht, und nimm den Rest so, wie er kommt.', author: 'Epiktet' },
+          { text: 'Es liegt nicht daran, dass ich so klug bin. Es liegt daran, dass ich länger bei Problemen bleibe.', author: 'Seneca' },
+        ],
+        actionCourage: [
+          { text: 'Du hast Macht über deinen Geist, nicht über äußere Ereignisse.', author: 'Marc Aurel' },
+          { text: 'Wer den Tod fürchtet, wird nie etwas tun, das eines lebenden Menschen würdig ist.', author: 'Seneca' },
+        ],
+        acceptanceControl: [
+          { text: 'Wie lange willst du noch warten, bevor du das Beste von dir verlangst?', author: 'Epiktet' },
+        ],
+      },
     },
 
     history: {
       title: 'Dein Verlauf',
+      tabSessions: 'Sitzungen',
+      tabMoments: 'Momente',
       statsReleased: 'Du hast',
       statsActed: 'Du hast bei',
       statsThings: 'Dingen gehandelt.',
       statsOn: 'losgelassen.',
       emptyTitle: 'Noch keine Sitzungen gespeichert.',
       emptySubtext: 'Tippe nach einer Sitzung auf "Speichern", um sie hier aufzubewahren.',
+      momentsEmpty: 'Noch keine Momente gespeichert.',
+      momentsEmptySubtext: 'Gespeicherte Momente erscheinen hier.',
       emotionLabel: 'Gefühl',
       sectionWrote: 'Was du geschrieben hast',
       sectionResult: 'Dein Ergebnis',
@@ -552,9 +682,9 @@ export const translations = {
     },
 
     paywall: {
-      eyebrow: 'Unwind',
+      eyebrow: 'Unstory',
       heading: 'Du hast deine\n5 kostenlosen Sitzungen genutzt',
-      subtext: 'Entsperre Unwind für immer — einmalig, kein Abo.',
+      subtext: 'Entsperre Unstory für immer — einmalig, kein Abo.',
       features: [
         'Unbegrenzte Sitzungen',
         'Vollständiger Verlauf lokal gespeichert',
@@ -565,6 +695,44 @@ export const translations = {
       purchaseBtn: 'Für $7.99 entsperren',
       oneTimeNote: 'Einmalige Zahlung. Für immer deins.',
       restore: 'Kauf wiederherstellen',
+      label: 'UNSTORY PREMIUM',
+      title: 'Verstehe dich.\nVerändere dich.',
+      subtitle: 'Unbegrenzte Sitzungen, um wirklich zu verstehen, was du fühlst.',
+      feature1: 'Unbegrenzte Klarheitssitzungen',
+      feature2: 'Vollständiger Sitzungsverlauf',
+      feature3: 'Gegenwarts-Übung (Grounding)',
+      feature4: 'Alle zukünftigen Funktionen inklusive',
+      monthly: 'Monatlich',
+      annual: 'Jährlich',
+      lifetime: 'Lebenslang',
+      bestValue: 'BESTES ANGEBOT',
+      mostPopular: 'AM BELIEBTESTEN',
+      monthlyPrice: '4,99 $/Monat',
+      annualPrice: '14,99 $/Jahr',
+      lifetimePrice: '24,99 $',
+      lifetimeNote: 'einmalig',
+      cta: 'Premium starten',
+      restoreLabel: 'Käufe wiederherstellen',
+      terms: 'Nutzungsbedingungen',
+      privacy: 'Datenschutzrichtlinie',
+      disclaimer: 'Abos verlängern sich automatisch, wenn sie nicht 24 Std. vor Ablauf gekündigt werden. Verwaltung in den App Store-Einstellungen.',
+    },
+
+    // ── Present Moment ────────────────────────────────────────────
+    presentMoment: {
+      oneThing: 'Noch eine Sache.',
+      takeSeconds: 'Nimm dir 60 Sekunden. Schau dich einfach um.',
+      imReady: 'Ich bin bereit',
+      resultTeaser: 'Noch eine Sache.',
+      resultTeaserSub: 'Nimm dir 60 Sekunden. Schau dich einfach um.',
+      readyBtn: 'Ich bin bereit',
+      teaserHint: '60 Sekunden. Schau einfach.',
+      timerLabel: 'Nimm dir 60 Sekunden.\nSchau dich einfach um.',
+      noticePrompt: 'Was hast du bemerkt?',
+      noticePlaceholder: 'Beschreib, was du gesehen, gehört oder gefühlt hast...',
+      saveBtn: 'Diesen Moment speichern',
+      skipBtn: 'Überspringen',
+      paywallHeading: 'Gegenwärtiger Moment',
     },
   },
 } as const;

@@ -9,6 +9,7 @@ import {
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { Feather } from '@expo/vector-icons';
 import { useI18nStore, useT } from '@/i18n';
 import { SupportedLocale } from '@/i18n/translations';
 import { Colors, FontNames, Spacing, Radius } from '@/constants/theme';
@@ -18,10 +19,10 @@ interface Props {
   onClose: () => void;
 }
 
-const LOCALES: { id: SupportedLocale; flag: string }[] = [
-  { id: 'en', flag: '🇺🇸' },
-  { id: 'es', flag: '🇲🇽' },
-  { id: 'de', flag: '🇩🇪' },
+const LOCALES: { id: SupportedLocale }[] = [
+  { id: 'en' },
+  { id: 'es' },
+  { id: 'de' },
 ];
 
 export default function LanguageSelectorSheet({ visible, onClose }: Props) {
@@ -58,7 +59,7 @@ export default function LanguageSelectorSheet({ visible, onClose }: Props) {
           <Text style={styles.title}>{T.language.title}</Text>
 
           <View style={styles.options}>
-            {LOCALES.map(({ id, flag }) => {
+            {LOCALES.map(({ id }) => {
               const isSelected = locale === id;
               const label = T.language[id];
               return (
@@ -69,12 +70,11 @@ export default function LanguageSelectorSheet({ visible, onClose }: Props) {
                   activeOpacity={0.8}
                 >
                   {isSelected && <View style={styles.optionBorderLeft} />}
-                  <Text style={styles.optionFlag}>{flag}</Text>
                   <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
                     {label}
                   </Text>
                   {isSelected && (
-                    <Text style={styles.checkmark}>✓</Text>
+                    <Feather name="check" size={18} color="#C8A97E" />
                   )}
                 </TouchableOpacity>
               );
@@ -147,9 +147,6 @@ const styles = StyleSheet.create({
     width: 3,
     backgroundColor: Colors.accent,
   },
-  optionFlag: {
-    fontSize: 20,
-  },
   optionLabel: {
     flex: 1,
     fontFamily: FontNames.sans,
@@ -157,11 +154,6 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   optionLabelSelected: {
-    color: Colors.accent,
-    fontFamily: FontNames.sansMedium,
-  },
-  checkmark: {
-    fontSize: 16,
     color: Colors.accent,
     fontFamily: FontNames.sansMedium,
   },

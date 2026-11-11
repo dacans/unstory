@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textSecondary,
     lineHeight: 28,
+    textAlign: 'left',
   },
   footer: {
     paddingTop: Spacing.md,

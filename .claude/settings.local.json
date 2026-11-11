@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd.exe /c \"rename \"\"C:\\\\Users\\\\DG\\\\Desktop\\\\IOS\\\\apps\\\\unwind\"\" \"\"unstory\"\"\")",
+      "Bash(powershell -Command \"Rename-Item -Path ''C:\\\\Users\\\\DG\\\\Desktop\\\\IOS\\\\apps\\\\unwind'' -NewName ''unstory'' -ErrorAction Stop\")",
+      "Bash(npx expo install:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

@@ -12,16 +12,19 @@ import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { useSessionStore, SavedSession } from '@/store/sessionStore';
+import { Feather } from '@expo/vector-icons';
+import { useSessionStore, SavedSession, PresentMoment } from '@/store/sessionStore';
 import { useT } from '@/i18n';
 import { Colors, FontNames, Spacing, Radius } from '@/constants/theme';
 
-const EMOTION_ICONS: Record<string, string> = {
-  overwhelmed: '🌊',
-  anxious: '⚡',
-  frustrated: '🔥',
-  exhausted: '🌑',
-  stuck: '🪨',
+type FeatherIconName = React.ComponentProps<typeof Feather>['name'];
+
+const EMOTION_ICONS: Record<string, FeatherIconName> = {
+  overwhelmed: 'wind',
+  anxious: 'zap',
+  frustrated: 'alert-circle',
+  exhausted: 'moon',
+  stuck: 'anchor',
 };
 
 const RESULT_COLORS: Record<string, string> = {
@@ -33,6 +36,17 @@ const RESULT_COLORS: Record<string, string> = {
 function formatDate(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatDateTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function SessionDetailModal({
@@ -57,7 +71,7 @@ function SessionDetailModal({
 
         <ScrollView contentContainerStyle={styles.modalContent} showsVerticalScrollIndicator={false}>
           <View style={styles.detailRow}>
-            <Text style={styles.detailIcon}>{EMOTION_ICONS[session.emotion]}</Text>
+            <Feather name={EMOTION_ICONS[session.emotion]} size={24} color={Colors.accent} />
             <View>
               <Text style={styles.detailLabel}>{T.history.emotionLabel}</Text>
               <Text style={styles.detailValue} numberOfLines={1}>
@@ -87,12 +101,15 @@ function SessionDetailModal({
   );
 }
 
+type TabType = 'sessions' | 'moments';
+
 export default function HistoryScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { sessions } = useSessionStore();
+  const { sessions, presentMoments } = useSessionStore();
   const T = useT();
   const [selected, setSelected] = useState<SavedSession | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>('sessions');
 
   const actedCount = sessions.filter((s) => s.resultType === 'acted').length;
   const releasedCount = sessions.filter((s) => s.resultType === 'released').length;
@@ -102,65 +119,125 @@ export default function HistoryScreen() {
     setSelected(session);
   };
 
+  const handleTab = (tab: TabType) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setActiveTab(tab);
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backText}>←</Text>
+          <Feather name="arrow-left" size={22} color={Colors.textSecondary} />
         </TouchableOpacity>
         <Text style={styles.title}>{T.history.title}</Text>
         <View style={{ width: 40 }} />
       </View>
 
-      {sessions.length > 0 && (
-        <Animated.View entering={FadeInDown.duration(400)} style={styles.stats}>
-          <Text style={styles.statsText}>
-            {T.history.statsReleased}{' '}
-            <Text style={styles.statsHighlight}>{releasedCount}</Text>{' '}
-            {T.history.statsThings}{' '}
-            {T.history.statsActed}{' '}
-            <Text style={styles.statsHighlight}>{actedCount}</Text>
-            {T.history.statsOn ? ` ${T.history.statsOn}` : '.'}
+      {/* Tabs */}
+      <View style={styles.tabs}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'sessions' && styles.tabActive]}
+          onPress={() => handleTab('sessions')}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.tabText, activeTab === 'sessions' && styles.tabTextActive]}>
+            {T.history.tabSessions}
           </Text>
-        </Animated.View>
-      )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'moments' && styles.tabActive]}
+          onPress={() => handleTab('moments')}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.tabText, activeTab === 'moments' && styles.tabTextActive]}>
+            {T.history.tabMoments}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
-      {sessions.length === 0 ? (
-        <View style={styles.empty}>
-          <Text style={styles.emptyText}>{T.history.emptyTitle}</Text>
-          <Text style={styles.emptySubtext}>{T.history.emptySubtext}</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={sessions}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <Animated.View entering={FadeInDown.delay(index * 60).duration(400)}>
-              <TouchableOpacity
-                style={styles.card}
-                onPress={() => handleCard(item)}
-                activeOpacity={0.8}
-              >
-                <View style={styles.cardTop}>
-                  <Text style={styles.cardIcon}>{EMOTION_ICONS[item.emotion]}</Text>
-                  <View style={styles.cardMeta}>
-                    <Text style={styles.cardDate}>{formatDate(item.date)}</Text>
-                    <View style={[styles.resultBadge, { borderColor: RESULT_COLORS[item.resultType] }]}>
-                      <Text style={[styles.resultBadgeText, { color: RESULT_COLORS[item.resultType] }]}>
-                        {T.history.badges[item.resultType]}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <Text style={styles.cardPreview} numberOfLines={2}>
-                  {item.dumpText}
-                </Text>
-              </TouchableOpacity>
+      {/* Sessions tab */}
+      {activeTab === 'sessions' && (
+        <>
+          {sessions.length > 0 && (
+            <Animated.View entering={FadeInDown.duration(400)} style={styles.stats}>
+              <Text style={styles.statsText}>
+                {T.history.statsReleased}{' '}
+                <Text style={styles.statsHighlight}>{releasedCount}</Text>{' '}
+                {T.history.statsThings}{' '}
+                {T.history.statsActed}{' '}
+                <Text style={styles.statsHighlight}>{actedCount}</Text>
+                {T.history.statsOn ? ` ${T.history.statsOn}` : '.'}
+              </Text>
             </Animated.View>
           )}
-        />
+
+          {sessions.length === 0 ? (
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>{T.history.emptyTitle}</Text>
+              <Text style={styles.emptySubtext}>{T.history.emptySubtext}</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={sessions}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => (
+                <Animated.View entering={FadeInDown.delay(index * 60).duration(400)}>
+                  <TouchableOpacity
+                    style={styles.card}
+                    onPress={() => handleCard(item)}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.cardTop}>
+                      <Feather name={EMOTION_ICONS[item.emotion]} size={18} color={Colors.accent} />
+                      <View style={styles.cardMeta}>
+                        <Text style={styles.cardDate}>{formatDate(item.date)}</Text>
+                        <View style={[styles.resultBadge, { borderColor: RESULT_COLORS[item.resultType] }]}>
+                          <Text style={[styles.resultBadgeText, { color: RESULT_COLORS[item.resultType] }]}>
+                            {T.history.badges[item.resultType]}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <Text style={styles.cardPreview} numberOfLines={2}>
+                      {item.dumpText}
+                    </Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+            />
+          )}
+        </>
+      )}
+
+      {/* Moments tab */}
+      {activeTab === 'moments' && (
+        <>
+          {presentMoments.length === 0 ? (
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>{T.history.momentsEmpty}</Text>
+              <Text style={styles.emptySubtext}>{T.history.momentsEmptySubtext}</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={presentMoments}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }: { item: PresentMoment; index: number }) => (
+                <Animated.View entering={FadeInDown.delay(index * 60).duration(400)}>
+                  <View style={styles.momentCard}>
+                    <Text style={styles.momentDate}>{formatDateTime(item.date)}</Text>
+                    <Text style={styles.momentText}>{item.text}</Text>
+                  </View>
+                </Animated.View>
+              )}
+            />
+          )}
+        </>
       )}
 
       {selected && (
@@ -178,12 +255,38 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.xl,
     paddingVertical: Spacing.sm,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
-  backBtn: { width: 40 },
-  backText: { fontSize: 22, color: Colors.textSecondary },
+  backBtn: { width: 40, justifyContent: 'center' },
   title: { fontFamily: FontNames.serif, fontSize: 20, color: Colors.textPrimary },
-  stats: { paddingHorizontal: Spacing.xl, paddingVertical: Spacing.md, marginBottom: Spacing.sm },
+  // Tabs
+  tabs: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.xl,
+    marginBottom: Spacing.md,
+    gap: Spacing.sm,
+  },
+  tab: {
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  tabActive: {
+    backgroundColor: Colors.surface,
+    borderColor: Colors.accent,
+  },
+  tabText: {
+    fontFamily: FontNames.sans,
+    fontSize: 14,
+    color: Colors.textMuted,
+  },
+  tabTextActive: {
+    color: Colors.accent,
+    fontFamily: FontNames.sansMedium,
+  },
+  stats: { paddingHorizontal: Spacing.xl, paddingVertical: Spacing.sm, marginBottom: Spacing.xs },
   statsText: { fontFamily: FontNames.sans, fontSize: 15, color: Colors.textSecondary, lineHeight: 22 },
   statsHighlight: { color: Colors.accent, fontFamily: FontNames.sansMedium },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.xl },
@@ -196,17 +299,38 @@ const styles = StyleSheet.create({
     textAlign: 'center', lineHeight: 22,
   },
   list: { paddingHorizontal: Spacing.xl, paddingBottom: Spacing.xxl, gap: Spacing.sm },
+  // Session cards
   card: {
     backgroundColor: Colors.surface, borderRadius: Radius.lg,
     borderWidth: 1, borderColor: Colors.border, padding: Spacing.lg,
   },
   cardTop: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.sm, gap: Spacing.sm },
-  cardIcon: { fontSize: 20 },
   cardMeta: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   cardDate: { fontFamily: FontNames.sans, fontSize: 13, color: Colors.textSecondary },
   resultBadge: { borderRadius: Radius.full, borderWidth: 1, paddingHorizontal: Spacing.sm, paddingVertical: 2 },
   resultBadgeText: { fontFamily: FontNames.sansMedium, fontSize: 11, letterSpacing: 0.5 },
   cardPreview: { fontFamily: FontNames.sans, fontSize: 14, color: Colors.textSecondary, lineHeight: 20 },
+  // Moment cards
+  momentCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    padding: Spacing.lg,
+  },
+  momentDate: {
+    fontFamily: FontNames.sans,
+    fontSize: 12,
+    color: Colors.textMuted,
+    marginBottom: Spacing.sm,
+    letterSpacing: 0.3,
+  },
+  momentText: {
+    fontFamily: FontNames.sans,
+    fontSize: 15,
+    color: Colors.textPrimary,
+    lineHeight: 23,
+  },
   // Modal
   modal: { flex: 1, backgroundColor: Colors.background },
   modalHeader: {
@@ -219,7 +343,6 @@ const styles = StyleSheet.create({
   closeText: { fontFamily: FontNames.sansMedium, fontSize: 15, color: Colors.accent },
   modalContent: { paddingHorizontal: Spacing.xl, paddingTop: Spacing.lg, paddingBottom: Spacing.xxl },
   detailRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.md },
-  detailIcon: { fontSize: 28 },
   detailLabel: { fontFamily: FontNames.sans, fontSize: 12, color: Colors.textMuted, letterSpacing: 0.5 },
   detailValue: { fontFamily: FontNames.serif, fontSize: 20, color: Colors.textPrimary },
   detailChip: { alignSelf: 'flex-start', marginBottom: Spacing.lg },

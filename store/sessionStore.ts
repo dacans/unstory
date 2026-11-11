@@ -15,14 +15,22 @@ export interface SavedSession {
   resultMessage: string;
 }
 
+export interface PresentMoment {
+  id: string;
+  date: string;
+  text: string;
+}
+
 interface SessionStore {
   emotion: Emotion | null;
   dumpText: string;
   flowAnswers: Record<string, string>;
   sessionCount: number;
   isPro: boolean;
+  isPremium: boolean;
   disclaimerAccepted: boolean;
   sessions: SavedSession[];
+  presentMoments: PresentMoment[];
   currentResultType: ResultType | null;
   currentResultMessage: string;
 
@@ -31,18 +39,22 @@ interface SessionStore {
   setFlowAnswer: (key: string, value: string) => void;
   setResultType: (type: ResultType, message: string) => void;
   saveSession: () => Promise<void>;
+  savePresentMoment: (text: string) => Promise<void>;
   clearSession: () => void;
   incrementSessionCount: () => Promise<void>;
   loadPersistedData: () => Promise<void>;
   setIsPro: (val: boolean) => Promise<void>;
+  setIsPremium: (val: boolean) => Promise<void>;
   acceptDisclaimer: () => Promise<void>;
 }
 
 const STORAGE_KEYS = {
   sessionCount: 'session_count',
   isPro: 'is_pro',
+  isPremium: 'is_premium',
   savedSessions: 'saved_sessions',
   disclaimerAccepted: 'disclaimer_accepted',
+  presentMoments: 'present_moments',
 };
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
@@ -51,8 +63,10 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   flowAnswers: {},
   sessionCount: 0,
   isPro: false,
+  isPremium: false,
   disclaimerAccepted: false,
   sessions: [],
+  presentMoments: [],
   currentResultType: null,
   currentResultMessage: '',
 
@@ -86,6 +100,18 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     await AsyncStorage.setItem(STORAGE_KEYS.savedSessions, JSON.stringify(updated));
   },
 
+  savePresentMoment: async (text) => {
+    const { presentMoments } = get();
+    const newMoment: PresentMoment = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      text,
+    };
+    const updated = [newMoment, ...presentMoments];
+    set({ presentMoments: updated });
+    await AsyncStorage.setItem(STORAGE_KEYS.presentMoments, JSON.stringify(updated));
+  },
+
   clearSession: () =>
     set({
       emotion: null,
@@ -103,18 +129,22 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   loadPersistedData: async () => {
     try {
-      const [countStr, isProStr, sessionsStr, disclaimerStr] = await Promise.all([
+      const [countStr, isProStr, isPremiumStr, sessionsStr, disclaimerStr, momentsStr] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.sessionCount),
         AsyncStorage.getItem(STORAGE_KEYS.isPro),
+        AsyncStorage.getItem(STORAGE_KEYS.isPremium),
         AsyncStorage.getItem(STORAGE_KEYS.savedSessions),
         AsyncStorage.getItem(STORAGE_KEYS.disclaimerAccepted),
+        AsyncStorage.getItem(STORAGE_KEYS.presentMoments),
       ]);
 
       set({
         sessionCount: countStr ? parseInt(countStr, 10) : 0,
         isPro: isProStr === 'true',
+        isPremium: isPremiumStr === 'true',
         sessions: sessionsStr ? JSON.parse(sessionsStr) : [],
         disclaimerAccepted: disclaimerStr === 'true',
+        presentMoments: momentsStr ? JSON.parse(momentsStr) : [],
       });
     } catch (_) {}
   },
@@ -122,6 +152,11 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   setIsPro: async (val) => {
     set({ isPro: val });
     await AsyncStorage.setItem(STORAGE_KEYS.isPro, String(val));
+  },
+
+  setIsPremium: async (val) => {
+    set({ isPremium: val });
+    await AsyncStorage.setItem(STORAGE_KEYS.isPremium, String(val));
   },
 
   acceptDisclaimer: async () => {

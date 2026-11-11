@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -22,15 +22,7 @@ export default function DumpScreen() {
   const insets = useSafeAreaInsets();
   const { emotion, dumpText, setDumpText } = useSessionStore();
   const T = useT();
-  const inputRef = useRef<TextInput>(null);
   const [localText, setLocalText] = useState(dumpText);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      inputRef.current?.focus();
-    }, 400);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleChange = (text: string) => {
     setLocalText(text);
@@ -76,7 +68,6 @@ export default function DumpScreen() {
 
           <Animated.View entering={FadeInDown.delay(250).duration(400)} style={styles.inputWrap}>
             <TextInput
-              ref={inputRef}
               style={styles.input}
               multiline
               placeholder={T.dump.placeholder}
@@ -157,14 +148,17 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     position: 'relative',
+    marginBottom: 32,
   },
   input: {
     fontFamily: FontNames.sans,
     fontSize: 17,
     color: Colors.textPrimary,
-    minHeight: 200,
+    minHeight: 160,
     lineHeight: 28,
     paddingBottom: Spacing.xxl,
+    paddingVertical: 16,
+    paddingHorizontal: 0,
   },
   charCount: {
     position: 'absolute',

@@ -1,71 +1,61 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  withSequence,
-  FadeIn,
-} from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { Feather } from '@expo/vector-icons';
 import { useSessionStore } from '@/store/sessionStore';
-import { useT } from '@/i18n';
+import { useT, useI18nStore } from '@/i18n';
 import LanguageSelectorSheet from '@/components/modals/LanguageSelectorSheet';
 import { Colors, FontNames, Spacing, Radius } from '@/constants/theme';
-
-const { width, height } = Dimensions.get('window');
+import { seedDemoData } from '@/utils/seedDemoData';
 
 export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { sessionCount, isPro } = useSessionStore();
+  const { sessionCount, isPro, isPremium } = useSessionStore();
   const T = useT();
   const [langVisible, setLangVisible] = useState(false);
+  const [demoToast, setDemoToast] = useState(false);
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const glowOpacity = useSharedValue(0.3);
-  const tooltipOpacity = useSharedValue(1);
-  const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    glowOpacity.value = withRepeat(
-      withSequence(
-        withTiming(0.6, { duration: 4000 }),
-        withTiming(0.3, { duration: 4000 })
-      ),
-      -1,
-      false
-    );
-
-    tooltipTimer.current = setTimeout(() => {
-      tooltipOpacity.value = withTiming(0, { duration: 600 });
-    }, 3000);
-
-    return () => { if (tooltipTimer.current) clearTimeout(tooltipTimer.current); };
-  }, []);
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value,
-  }));
-
-  const tooltipStyle = useAnimatedStyle(() => ({
-    opacity: tooltipOpacity.value,
-  }));
+  const handleHeadingTap = () => {
+    tapCount.current += 1;
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 2000);
+    if (tapCount.current >= 5) {
+      tapCount.current = 0;
+      if (tapTimer.current) clearTimeout(tapTimer.current);
+      const lang = useI18nStore.getState().locale;
+      seedDemoData(lang).then(() => {
+        setDemoToast(true);
+        setTimeout(() => setDemoToast(false), 2000);
+      });
+    }
+  };
 
   const handleStart = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (!isPro && sessionCount >= 5) {
+    if (!isPro && !isPremium && sessionCount >= 5) {
       router.push('/paywall');
     } else {
       router.push('/emotion');
+    }
+  };
+
+  const handleMoments = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (isPremium) {
+      router.push('/present-moment');
+    } else {
+      router.push('/paywall');
     }
   };
 
@@ -81,39 +71,60 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      {/* Animated glow */}
-      <Animated.View style={[styles.glow, glowStyle]} pointerEvents="none" />
 
-      {/* Header: globe (left) + history (right) */}
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleLanguage} style={styles.iconBtn}>
-          <Text style={styles.iconText}>🌐</Text>
+          <Feather name="globe" size={22} color={Colors.textSecondary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleHistory} style={styles.iconBtn}>
-          <Text style={styles.iconText}>◷</Text>
+          <Feather name="clock" size={22} color={Colors.textSecondary} />
         </TouchableOpacity>
       </View>
 
-      {/* Center */}
-      <Animated.View entering={FadeIn.duration(800).delay(200)} style={styles.center}>
-        <Text style={styles.heading}>{T.home.heading}</Text>
+      {/* Center — vertically centered */}
+      <Animated.View entering={FadeIn.duration(700).delay(100)} style={styles.center}>
+        <TouchableOpacity onPress={handleHeadingTap} activeOpacity={1}>
+          <Text
+            style={styles.heading}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+            numberOfLines={3}
+          >
+            {T.home.heading}
+          </Text>
+        </TouchableOpacity>
+        <View style={styles.gap} />
         <Text style={styles.subtext}>{T.home.subtext}</Text>
-
-        <Animated.View style={[styles.tooltip, tooltipStyle]}>
-          <Text style={styles.tooltipText}>{T.home.tooltip}</Text>
-        </Animated.View>
+        {demoToast && <Text style={styles.demoToast}>✓ Demo loaded</Text>}
       </Animated.View>
 
-      {/* Bottom */}
-      <Animated.View entering={FadeIn.duration(800).delay(400)} style={styles.bottom}>
+      {/* Bottom — pinned above safe area */}
+      <Animated.View entering={FadeIn.duration(700).delay(250)} style={styles.bottom}>
         <TouchableOpacity
           style={styles.ctaButton}
           onPress={handleStart}
           activeOpacity={0.85}
         >
-          <Text style={styles.ctaText}>{T.home.cta}</Text>
+          <Text
+            style={styles.ctaText}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+            numberOfLines={1}
+          >
+            {T.home.cta}
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.proText}>{T.home.proText}</Text>
+        <View style={styles.gap16} />
+        <TouchableOpacity
+          style={styles.momentsButton}
+          onPress={handleMoments}
+          activeOpacity={0.8}
+        >
+          <Feather name="sun" size={16} color="#C8A97E" />
+          <Text style={styles.momentsText}>{T.home.momentsButton}</Text>
+        </TouchableOpacity>
+        <View style={styles.gap12} />
         <Text style={styles.disclaimerLine}>{T.home.disclaimerLine}</Text>
       </Animated.View>
 
@@ -125,19 +136,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
-    paddingHorizontal: Spacing.xl,
-  },
-  glow: {
-    position: 'absolute',
-    width: width * 1.2,
-    height: height * 0.6,
-    top: height * 0.1,
-    left: -width * 0.1,
-    borderRadius: width,
-    backgroundColor: Colors.accent,
-    transform: [{ scaleY: 0.4 }],
-    filter: [{ blur: 80 }],
+    backgroundColor: '#0D0D0F',
+    paddingHorizontal: 28,
   },
   header: {
     flexDirection: 'row',
@@ -149,70 +149,73 @@ const styles = StyleSheet.create({
   iconBtn: {
     padding: Spacing.xs,
   },
-  iconText: {
-    fontSize: 22,
-    color: Colors.textSecondary,
-  },
   center: {
     flex: 1,
     justifyContent: 'center',
   },
   heading: {
     fontFamily: FontNames.serif,
-    fontSize: 42,
-    color: Colors.textPrimary,
-    lineHeight: 52,
-    marginBottom: Spacing.md,
+    fontSize: 36,
+    color: '#F0EDE8',
+    lineHeight: 46,
+  },
+  gap: {
+    height: 16,
+  },
+  gap12: {
+    height: 12,
   },
   subtext: {
     fontFamily: FontNames.sans,
     fontSize: 16,
-    color: Colors.textSecondary,
+    color: '#8A8780',
     lineHeight: 24,
-  },
-  tooltip: {
-    marginTop: Spacing.xxl,
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.surface,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  tooltipText: {
-    fontFamily: FontNames.sans,
-    fontSize: 13,
-    color: Colors.textSecondary,
   },
   bottom: {
     paddingBottom: Spacing.sm,
-    gap: Spacing.md,
   },
   ctaButton: {
     backgroundColor: Colors.accent,
     borderRadius: Radius.lg,
     paddingVertical: 18,
     alignItems: 'center',
+    paddingHorizontal: Spacing.md,
   },
   ctaText: {
     fontFamily: FontNames.sansMedium,
     fontSize: 17,
-    color: Colors.background,
+    color: '#0D0D0F',
     letterSpacing: 0.3,
   },
-  proText: {
+  demoToast: {
     fontFamily: FontNames.sans,
-    fontSize: 13,
-    color: Colors.textMuted,
-    textAlign: 'center',
+    fontSize: 12,
+    color: Colors.accent,
+    marginTop: 8,
+  },
+  gap16: {
+    height: 16,
+  },
+  momentsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(200, 169, 126, 0.35)',
+    paddingVertical: 14,
+    gap: 8,
+  },
+  momentsText: {
+    fontFamily: FontNames.sans,
+    fontSize: 15,
+    color: '#C8A97E',
   },
   disclaimerLine: {
     fontFamily: FontNames.sans,
     fontSize: 11,
     color: '#8A8780',
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: 16,
-    paddingBottom: Spacing.xs,
   },
 });

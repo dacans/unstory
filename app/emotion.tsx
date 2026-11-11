@@ -17,16 +17,19 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { Feather } from '@expo/vector-icons';
 import { useSessionStore, Emotion } from '@/store/sessionStore';
 import { useT } from '@/i18n';
 import { Colors, FontNames, Spacing, Radius } from '@/constants/theme';
 
-const EMOTION_IDS: { id: Emotion; icon: string }[] = [
-  { id: 'overwhelmed', icon: '🌊' },
-  { id: 'anxious', icon: '⚡' },
-  { id: 'frustrated', icon: '🔥' },
-  { id: 'exhausted', icon: '🌑' },
-  { id: 'stuck', icon: '🪨' },
+type FeatherIconName = React.ComponentProps<typeof Feather>['name'];
+
+const EMOTION_IDS: { id: Emotion; icon: FeatherIconName }[] = [
+  { id: 'overwhelmed', icon: 'wind' },
+  { id: 'anxious', icon: 'zap' },
+  { id: 'frustrated', icon: 'alert-circle' },
+  { id: 'exhausted', icon: 'moon' },
+  { id: 'stuck', icon: 'anchor' },
 ];
 
 function EmotionCard({
@@ -39,7 +42,7 @@ function EmotionCard({
   index,
 }: {
   id: Emotion;
-  icon: string;
+  icon: FeatherIconName;
   label: string;
   subtitle: string;
   selected: boolean;
@@ -77,7 +80,7 @@ function EmotionCard({
             <Text style={styles.cardLabel}>{label}</Text>
             <Text style={styles.cardSubtitle}>{subtitle}</Text>
           </View>
-          <Text style={styles.cardIcon}>{icon}</Text>
+          <Feather name={icon} size={22} color={Colors.accent} style={styles.cardIcon} />
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -232,7 +235,6 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
   },
   cardIcon: {
-    fontSize: 24,
     marginLeft: Spacing.md,
   },
   footer: {

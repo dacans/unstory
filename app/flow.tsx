@@ -1,15 +1,19 @@
+import { Colors, FontNames, Radius, Spacing } from '@/constants/theme';
+import { TranslationKeys, useT } from '@/i18n';
+import { Emotion, useSessionStore } from '@/store/sessionStore';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import Animated, {
   FadeInDown,
   FadeOut,
@@ -18,10 +22,6 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as Haptics from 'expo-haptics';
-import { useSessionStore, Emotion } from '@/store/sessionStore';
-import { useT, TranslationKeys } from '@/i18n';
-import { Colors, FontNames, Spacing, Radius } from '@/constants/theme';
 
 // ─── Step type ───────────────────────────────────────────────────────────────
 
